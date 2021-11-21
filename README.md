@@ -68,3 +68,12 @@ This section has moved here: [https://facebook.github.io/create-react-app/docs/d
 ### `npm run build` fails to minify
 
 This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+
+
+## Notes
+
+- All Kongpanions: https://docs.kongregate.com/reference/server-api-kongpanions
+- User Kongpanions: https://docs.kongregate.com/reference/server-api-user-kongpanions
+- HTTP requests: https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API/Using_Fetch
+- React.js: https://code.visualstudio.com/docs/nodejs/reactjs-tutorial
+- React.js list mapping of URLs: https://stackoverflow.com/questions/52918562/reactjs-display-a-list-of-images-from-an-array-of-urls/52919006
