@@ -175,4 +175,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       handleUserKpans();
     }
   });
+  document
+    .querySelector('#usernameInput')
+    .addEventListener('change', handleUserKpans);
 });
