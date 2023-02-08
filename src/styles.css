@@ -19,6 +19,16 @@ body {
     margin-bottom: 2rem;
     padding: 2rem 1rem;
     text-align: center;
+    border-style: solid;
+    border-radius: 5px;
+}
+
+.announcement {
+    width: 500px; 
+    margin: auto;
+    border-radius: 5px;
+    background-color: #00ff88;
+    color: #000000;
 }
 
 .red {
@@ -39,6 +49,15 @@ body {
 .yellow {
     background-color: #F4B400;
     color: #fff;
+}
+
+.white {
+    background-color: #fff;
+    color: #000;
+}
+
+.blacktext {
+    color: #000;
 }
 
 .circle {
@@ -97,6 +116,11 @@ button, input[type="submit"] {
     vertical-align: middle;
 }
 
+ul {
+    list-style: none;
+    display: inline-block;
+    text-align: left;
+}
 
 input[type="text"] {
     line-height: 1.8;
