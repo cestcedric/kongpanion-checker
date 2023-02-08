@@ -16,6 +16,7 @@ const getAllKpans = async () => {
       if (response.ok) return response.json();
       throw new Error(response);
     })
+    .then((data) => data.kongpanions)
     .catch((error) => {
       console.log(error);
     });
@@ -26,7 +27,7 @@ const getUserKpans = async (user) => {
     .then((response) => response.json())
     .then((data) => JSON.parse(data.contents))
     .then((data) => {
-      if (data.success) return data;
+      if (data.success) return data.kongpanions;
       throw new Error(data.error_description);
     })
     .catch((error) => window.alert(`Oh no!\n${error}`));
@@ -77,14 +78,101 @@ const addWeeklyKpanInfo = ({
   textDiv.appendChild(descriptionElement);
 };
 
+const drawKpans = (kpans, parentId) => {
+  const parent = document.getElementById(parentId);
+
+  const kpanRows = kpans.map(
+    ({ description, id, name, normal_icon_url, shiny_icon_url, shiny }) => {
+      const kpanRow = document.createElement('tr');
+
+      const normalCol = document.createElement('th');
+      if (normal_icon_url !== undefined) {
+        const normalImg = document.createElement('img');
+        normalImg.src = normal_icon_url;
+        normalCol.appendChild(normalImg);
+      }
+
+      const shinyCol = document.createElement('th');
+      if (shiny || shiny === undefined) {
+        const shinyImg = document.createElement('img');
+        shinyImg.src = shiny_icon_url;
+        shinyCol.appendChild(shinyImg);
+      }
+
+      const textCol = document.createElement('th');
+      const nameElement = document.createElement('h4');
+      const descriptionElement = document.createElement('p');
+      nameElement.innerHTML = `${id} - ${name}`;
+      descriptionElement.innerHTML = description;
+      textCol.appendChild(nameElement);
+      textCol.appendChild(descriptionElement);
+
+      kpanRow.appendChild(normalCol);
+      kpanRow.appendChild(shinyCol);
+      kpanRow.appendChild(textCol);
+
+      return kpanRow;
+    }
+  );
+
+  parent.replaceChildren(...kpanRows);
+};
+
+const getMissingKpans = (allKpans, userKpans) => {
+  const userKpanDict = userKpans.reduce((userKpanDict, kpan) => {
+    userKpanDict[kpan.id] = kpan;
+    return userKpanDict;
+  });
+
+  const missingKpans = allKpans.map((kpan) => {
+    if (userKpanDict[kpan.id] === undefined) {
+      return {
+        description: kpan.description,
+        id: kpan.id,
+        name: kpan.name,
+        normal_icon_url: kpan.normal_icon_url,
+        shiny_icon_url: kpan.shiny_icon_url,
+      };
+    }
+    if (!userKpanDict[kpan.id].shiny) {
+      return {
+        description: kpan.description,
+        id: kpan.id,
+        name: `${kpan.name} (shiny)`,
+        shiny_icon_url: kpan.shiny_icon_url,
+      };
+    }
+  });
+
+  return missingKpans.filter((kpan) => kpan);
+};
+
 document.addEventListener('DOMContentLoaded', async () => {
+  const compKpans = (a, b) => a.id - b.id;
+
   const weeklyKpan = await getWeeklyKpan();
   addWeeklyKpanInfo(weeklyKpan);
 
-  document.querySelector('#submit').addEventListener('click', async () => {
+  const allKpans = await getAllKpans();
+  allKpans.sort(compKpans);
+  drawKpans(allKpans, 'allKpans');
+
+  const handleUserKpans = async () => {
     const user = document.querySelector('input').value;
 
-    const allKpans = await getAllKpans();
     const userKpans = await getUserKpans(user);
+    userKpans.sort(compKpans);
+    drawKpans(userKpans, 'collectedKpans');
+
+    const missingKpans = getMissingKpans(allKpans, userKpans);
+    missingKpans.sort(compKpans);
+    drawKpans(missingKpans, 'missingKpans');
+  };
+
+  document.querySelector('#submit').addEventListener('click', handleUserKpans);
+  document.querySelector('#usernameInput').addEventListener('keydown', (e) => {
+    if (e.code === 'Enter') {
+      handleUserKpans();
+    }
   });
 });
