@@ -170,7 +170,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     const currStatusDiv = document.getElementById('currentKpanStatus');
     if (missingKpans.map((kpan) => kpan.name).includes(weeklyKpan.kpanName)) {
-      currStatusDiv.innerHTML = 'Missing!';
+      currStatusDiv.innerHTML = 'Missing! 😱';
       currStatusDiv.classList = 'red announcement';
     } else {
       currStatusDiv.innerHTML = 'Collected 😎';
