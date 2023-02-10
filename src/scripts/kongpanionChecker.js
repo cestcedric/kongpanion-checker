@@ -78,6 +78,33 @@ const addWeeklyKpanInfo = ({
   textDiv.appendChild(descriptionElement);
 };
 
+const getMissingKpans = (allKpans, userKpans) => {
+  const userKpanDict = {};
+  userKpans.forEach((kpan) => (userKpanDict[kpan.id] = kpan));
+
+  const missingKpans = allKpans.map((kpan) => {
+    if (userKpanDict[kpan.id] === undefined) {
+      return {
+        description: kpan.description,
+        id: kpan.id,
+        name: kpan.name,
+        normal_icon_url: kpan.normal_icon_url,
+        shiny_icon_url: kpan.shiny_icon_url,
+      };
+    }
+    if (!userKpanDict[kpan.id].shiny) {
+      return {
+        description: kpan.description,
+        id: kpan.id,
+        name: `${kpan.name} (shiny)`,
+        shiny_icon_url: kpan.shiny_icon_url,
+      };
+    }
+  });
+
+  return missingKpans.filter((kpan) => kpan !== undefined);
+};
+
 const drawKpans = (kpans, parentId) => {
   const parent = document.getElementById(parentId);
 
@@ -118,35 +145,6 @@ const drawKpans = (kpans, parentId) => {
   parent.replaceChildren(...kpanRows);
 };
 
-const getMissingKpans = (allKpans, userKpans) => {
-  const userKpanDict = userKpans.reduce((userKpanDict, kpan) => {
-    userKpanDict[kpan.id] = kpan;
-    return userKpanDict;
-  });
-
-  const missingKpans = allKpans.map((kpan) => {
-    if (userKpanDict[kpan.id] === undefined) {
-      return {
-        description: kpan.description,
-        id: kpan.id,
-        name: kpan.name,
-        normal_icon_url: kpan.normal_icon_url,
-        shiny_icon_url: kpan.shiny_icon_url,
-      };
-    }
-    if (!userKpanDict[kpan.id].shiny) {
-      return {
-        description: kpan.description,
-        id: kpan.id,
-        name: `${kpan.name} (shiny)`,
-        shiny_icon_url: kpan.shiny_icon_url,
-      };
-    }
-  });
-
-  return missingKpans.filter((kpan) => kpan);
-};
-
 document.addEventListener('DOMContentLoaded', async () => {
   const compKpans = (a, b) => a.id - b.id;
 
@@ -158,7 +156,9 @@ document.addEventListener('DOMContentLoaded', async () => {
   drawKpans(allKpans, 'allKpans');
 
   const handleUserKpans = async () => {
-    const user = document.querySelector('input').value;
+    const input = document.querySelector('input');
+    const user = input.value;
+    input.blur();
 
     const userKpans = await getUserKpans(user);
     userKpans.sort(compKpans);
@@ -167,6 +167,15 @@ document.addEventListener('DOMContentLoaded', async () => {
     const missingKpans = getMissingKpans(allKpans, userKpans);
     missingKpans.sort(compKpans);
     drawKpans(missingKpans, 'missingKpans');
+
+    const currStatusDiv = document.getElementById('currentKpanStatus');
+    if (missingKpans.map((kpan) => kpan.name).includes(weeklyKpan.kpanName)) {
+      currStatusDiv.innerHTML = 'Missing!';
+      currStatusDiv.classList = 'red announcement';
+    } else {
+      currStatusDiv.innerHTML = 'Collected 😎';
+      currStatusDiv.classList = 'brightgreen announcement';
+    }
   };
 
   document.querySelector('#submit').addEventListener('click', handleUserKpans);

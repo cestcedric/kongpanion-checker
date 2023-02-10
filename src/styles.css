@@ -27,8 +27,6 @@ body {
     width: 500px; 
     margin: auto;
     border-radius: 5px;
-    background-color: #00ff88;
-    color: #000000;
 }
 
 .red {
@@ -47,8 +45,8 @@ body {
 }
 
 .yellow {
-    background-color: #F4B400;
-    color: #fff;
+    background-color: #fbff02;
+    color: #000;
 }
 
 .white {
@@ -56,8 +54,17 @@ body {
     color: #000;
 }
 
+.brightgreen {
+    background-color: #00ff88;
+    color: #000000;
+}
+
 .blacktext {
     color: #000;
+}
+
+.whitetext {
+    color: #fff;
 }
 
 .circle {

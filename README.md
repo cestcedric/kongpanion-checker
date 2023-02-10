@@ -9,11 +9,13 @@ GitHub Actions will then automatically deploy the new version to `[yourGitHubUse
 
 ## TODO
 
-- Make URL parameters available
+- Loading Animation
 - Tabbed interface
+- Search in Kongpanion Overview by Id
 - Clear button in username input
 - Improve styling
 - Add dark mode
+- Handle URL parameters
 
 ## Resources
 
